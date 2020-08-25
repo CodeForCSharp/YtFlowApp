@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="YtFlow.App.Pages.QrCodeScannerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:YtFlow.App.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Storyboard x:Name="warningTextStoryboard" Completed="warningTextStoryboard_Completed">
+            <DoubleAnimationUsingKeyFrames
+                Storyboard.TargetName="warningContainer"
+                Storyboard.TargetProperty="Opacity">
+                <LinearDoubleKeyFrame KeyTime="0:0:0.0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <LinearDoubleKeyFrame KeyTime="0:0:5.4" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:5.8" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+    <Grid Background="Black">
+        <Grid
+            x:Name="ContentPanel"
+            AllowDrop="True"
+            DragOver="ContentPanel_DragOver"
+            Drop="ContentPanel_Drop">
+            <!--  Perview  -->
+            <!--  Must be placed in prior to any other elements -->
+            <CaptureElement x:Name="VideoCapture" Stretch="Uniform" />
+            <!--  Progress indicator -->
+            <ProgressBar
+                x:Name="loadProgressBar"
+                VerticalAlignment="Top"
+                Visibility="Collapsed" />
+            <!--  Tips  -->
+            <StackPanel
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom">
+                <TextBlock
+                    Margin="0, 0, 0, 4"
+                    TextAlignment="Center"
+                    Foreground="White"
+                    Text="Take QR Code In The Preview" />
+                <Border
+                    x:Name="warningContainer"
+                    Margin="0, 0, 0, 12"
+                    Padding="8"
+                    HorizontalAlignment="Center"
+                    Background="#88000000"
+                    Opacity="0">
+                    <TextBlock
+                        x:Name="warningText"
+                        HorizontalAlignment="Center"
+                        TextWrapping="Wrap"
+                        Foreground="#FFF000" />
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    <Page.TopAppBar>
+        <CommandBar DefaultLabelPosition="Right">
+            <AppBarButton
+                Click="FromPictureButton_Click"
+                Icon="Add"
+                Label="Picture" />
+        </CommandBar>
+    </Page.TopAppBar>
+</Page>
