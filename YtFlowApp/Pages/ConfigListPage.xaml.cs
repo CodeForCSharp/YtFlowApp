@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Devices.Input;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -24,7 +23,6 @@ namespace YtFlow.App.Pages
     public sealed partial class ConfigListPage : Page
     {
         public ObservableCollection<IAdapterConfig> adapterConfigs { get; set; } = new ObservableCollection<IAdapterConfig>();
-        private static readonly KeyboardCapabilities keyboardCapabilities = new KeyboardCapabilities();
 
         public ConfigListPage ()
         {
@@ -39,7 +37,8 @@ namespace YtFlow.App.Pages
                 var directory = await ConfigUtils.AdapterConfigFolderTask;
                 var files = await directory.GetFilesAsync();
                 adapterConfigs.Clear();
-                foreach (var config in files.Select(f => AdapterConfig.GetConfigFromFilePath(f.Path)))
+                foreach (var config in await Task.WhenAll(files.Select(
+                    f => AdapterConfig.GetConfigFromFilePath(f.Path).AsTask())))
                 {
                     adapterConfigs.Add(config);
                 }
@@ -271,9 +270,7 @@ namespace YtFlow.App.Pages
 
         private void EnterMultiSelectMode ()
         {
-            configList.SelectionMode = keyboardCapabilities.KeyboardPresent == 0
-                ? ListViewSelectionMode.Multiple
-                : ListViewSelectionMode.Extended;
+            configList.SelectionMode = ListViewSelectionMode.Multiple;
             configList.IsItemClickEnabled = false;
             selectAllButton.Visibility = Visibility.Visible;
             selectButton.Visibility = Visibility.Collapsed;
